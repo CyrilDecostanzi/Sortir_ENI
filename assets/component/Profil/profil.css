@@ -1,0 +1,92 @@
+.profile_container {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding-top: 2rem;
+    margin-left: 2rem;
+}
+
+.profile_form {
+    display: flex;
+    justify-content: space-around;
+}
+.profile_picture {
+    max-width: 250px;
+    margin-left: 9rem;
+    margin-top: 4rem;
+    margin-right: -5rem;
+}
+
+.container_p {
+    display: flex;
+}
+.profile_message_error{
+    text-align: center;
+    color: red;
+}
+.profile_message_success{
+    text-align: center;
+    color:green;
+}
+
+.input_box {
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.profile_form > input {
+    margin-left: 2rem;
+}
+
+.profile_form > label {
+    display: flex;
+    align-items: start;
+}
+.button_box {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+#picture {
+    background-color: transparent;
+}
+
+/* ViewProfilPArticipant*/
+
+.container-pro {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 75%;
+}
+.profile-pic-view {
+    padding-top: 3rem;
+    margin-right: -10rem;
+}
+.hate_css {
+    display: flex;
+    flex-direction: column;
+    width: 32%;
+
+}
+.profile-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+}
+.profile-box span {
+    width: 100px;
+    white-space: nowrap;
+}
+.profile-view-title {
+    text-align: center;
+}
+.btn-pro {
+    margin-top: 2rem;
+    padding-left: 7rem;
+}

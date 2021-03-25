@@ -1,0 +1,50 @@
+.cancel_title {
+    text-align: center;
+}
+.cancel_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.profile_message_error{
+    text-align: center;
+    color: red;
+}
+
+.profile_message_success{
+    text-align: center;
+    color:green;
+    font-size: 1.2rem;
+}
+.cancel_form_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 30%;
+}
+.cancel_box {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 2rem;
+    justify-content: space-between;
+}
+.cancel_address {
+    width: 250px;
+}
+.cancel_box span {
+    font-weight: bold;
+}
+.button_box_cancel {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.cancel_form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 100%;
+}

@@ -1,0 +1,49 @@
+.create_act_title {
+    text-align: center;
+}
+.textarea_label {
+    vertical-align: top;
+}
+.create_act_form_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.create_act_form {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+.profile_message_error{
+    text-align: center;
+    color: red;
+}
+
+.profile_message_success{
+    text-align: center;
+    color:green;
+    font-size: 1.2rem;
+}
+.create_act_box {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+}
+.create_act_box_button {
+    text-align: center;
+}
+.create_act_box_button button {
+    margin: 2rem;
+}
+.form_act_box {
+    padding: 1rem;
+}
+.form_left_col {
+    display: flex;
+    flex-direction: column;
+}
+.publishButton {
+    white-space:nowrap;
+    width: auto;
+}

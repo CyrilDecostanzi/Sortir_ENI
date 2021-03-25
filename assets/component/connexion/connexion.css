@@ -1,0 +1,38 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.error_message {
+    color: red;
+    text-align: center;
+}
+.login {
+    margin-top: 3rem;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+}
+.inline-form {
+    display: flex;
+    justify-content: space-between;
+}
+.btn-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.btn-container label {
+    font-size: 0.9rem;
+    margin-left: 5px;
+}
+.remember-me {
+    padding-left: 10px;
+}
+
+
+.inline-form input {
+    margin-bottom: 1rem;
+}
+

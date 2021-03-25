@@ -1,0 +1,54 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
+html {
+    min-height: 100%;
+}
+
+body {
+    position: relative;
+    margin: 0 0 5rem;
+    min-height: 100%;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(white 10%, lightsteelblue 80%);
+}
+
+
+button {
+    height: 50px;
+    width: 100px;
+    border-radius: 10px;
+    box-shadow: 5px 2px 2px rgba(0, 0, 0, 0.2);
+    border: none;
+    margin-right: 10px;
+    transition: all 0.1s ease-in-out;
+    background: linear-gradient(white 1%, lightsteelblue 100%);
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+}
+
+button:active {
+    scale: 0.9;
+}
+
+
+button:hover {
+    box-shadow: 10px 5px 5px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+a {
+    color: rgba(0, 0, 0, 0.7);
+    transition: all 0.1s ease-in-out;
+    cursor: pointer;
+}
+a:hover {
+    color: rgba(0, 0, 0, 1);
+    scale: 1.1;
+}
+
+input, textarea, select {
+    background-color: rgb(240, 240, 240);
+    border-radius: 3px;
+    border : 1px solid lightgrey;
+    padding: 5px;
+}
