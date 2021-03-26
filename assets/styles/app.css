@@ -51,4 +51,5 @@ input, textarea, select {
     border-radius: 3px;
     border : 1px solid lightgrey;
     padding: 5px;
+    outline: none;
 }

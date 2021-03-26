@@ -138,7 +138,7 @@ export default class CreateActivity extends Component {
                 this.setState({ cities : cities });
             })
             .then(() => {
-                axios.get(`https://127.0.0.1:8000/api/participants/${this.state.idUserConnected}`)
+                axios.get(`https://127.0.0.1:8000/getuser`)
                     .catch(()=> {
                         this.setState({error : true})
                         this.setState({message : 'Impossible de récuperer l\'utilisateur'})

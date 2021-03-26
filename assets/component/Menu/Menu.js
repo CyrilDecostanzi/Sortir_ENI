@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { NavLink} from "react-router-dom";
 import './menu.css'
 import './script.js'
@@ -6,6 +6,10 @@ import Logout from "../logout/Logout";
 import Logo from "./Logo";
 
 function Menu() {
+
+    const [test, setTest] = useState(0);
+
+
     return (
             <header className="site-header">
                 <div className="wrapper site-header__wrapper">
@@ -16,7 +20,7 @@ function Menu() {
                         </button>
                         <ul className="nav__wrapper">
                             <li className="nav__item animate__animated animate__fadeIn">
-                                <NavLink to="/app/accueil">Accueil</NavLink>
+                                <NavLink to="/app/accueil" onClick={() => setTest(test + 1)}>Accueil {test}</NavLink>
                             </li>
                             <li className="nav__item animate__animated animate__fadeIn">
                                 <NavLink to="/app/profil">Mon profil</NavLink>
