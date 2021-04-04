@@ -18,8 +18,7 @@ class LoginApp extends Component {
             connexion: '',
             redirect: false,
             getUser: false,
-            push: '',
-            password: ''
+            push: ''
         };
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
         this.handleChangePseudo = this.handleChangePseudo.bind(this);

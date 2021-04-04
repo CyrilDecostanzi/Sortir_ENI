@@ -1,33 +1,28 @@
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import axios from "axios";
 
-class Publish extends Component {
+const Publish = (props) => {
 
-    state = {
-        message: '',
-        error: false
-    }
+    const [error, setError] = useState(false);
+    const [message, setMessage] = useState('');
+    const iriStatePublished = '/api/states/2';
 
-    publish = () => {
+    const publish = () => {
 
-        const iriStatePublished = '/api/states/2'
-
-        axios.put(`https://127.0.0.1:8000${this.props.activity["@id"]}`, {
+        axios.put(`https://127.0.0.1:8000${props.activity["@id"]}`, {
             "state": iriStatePublished
         }).catch(() => {
-            this.setState({error : true})
-            this.setState({message : "Une erreur s'est produite a la publication"})
+            setError(true);
+            setMessage("Une erreur s'est produite a la publication");
         }).then()
 
-        this.props.publish();
+        props.publish();
 
     }
 
-    render() {
         return (
-            <a onClick={this.publish}>Publier</a>
+            <a onClick={publish}>Publier</a>
         );
-    }
 }
 
 export default Publish;

@@ -1,21 +1,19 @@
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import axios from "axios";
 
 
-class Withdraw extends Component {
+const Withdraw = (props) => {
 
-    state = {
-        message: '',
-        error: false
-    }
+    const [error, setError] = useState(false);
+    const [message, setMessage] = useState('');
 
 
-    withdraw = () => {
+    const withdraw = () => {
 
-        const participants = this.props.activity.participants;
+        const participants = props.activity.participants;
         let IRIs = [];
 
-        let userIRI = this.props.user["@id"];
+        let userIRI = props.user["@id"];
 
 
         for(let i=0; i < participants.length; i++) {
@@ -26,34 +24,30 @@ class Withdraw extends Component {
         IRIs = IRIs.filter(item => item !== userIRI);
 
 
-        let state = (this.props.activity.registrationsMax === IRIs.length) ? "/api/states/3" : "/api/states/2";
+        let state = (props.activity.registrationsMax === IRIs.length) ? "/api/states/3" : "/api/states/2";
 
 
-        const activityIRI = this.props.activity["@id"];
+        const activityIRI = props.activity["@id"];
 
         axios.put(`https://127.0.0.1:8000${activityIRI}`, {
             "participants": IRIs,
             "state": state,
         }).catch(() => {
-            this.setState({error : true})
-            this.setState({message : "Une erreur s'est produite lors du désistement"})
+            setError(true);
+            setMessage("Une erreur s'est produite lors du désistement");
         }).then()
 
 
-        if(this.state.error) {
-            document.getElementById("error-message-activities").innerText = this.state.message;
+        if(error) {
+            document.getElementById("error-message-activities").innerText = message;
         }
 
-        this.props.withdraw();
+        props.withdraw();
 
     }
-
-    render() {
-
         return (
-                <a onClick={this.withdraw}>Se désister</a>
+                <a onClick={withdraw}>Se désister</a>
         );
-    }
 }
 
 

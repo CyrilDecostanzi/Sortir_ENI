@@ -1,56 +1,48 @@
-
-
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import axios from "axios";
 
-class Registered extends Component {
+const Registered = (props) => {
 
-    state = {
-        message: '',
-        error: false
-    }
+    const [error, setError] = useState(false);
+    const [message, setMessage] = useState('');
 
-    register = () => {
-
-        const participants = this.props.activity.participants;
+    const register = () => {
+        const participants = props.activity.participants;
         const IRIs = [];
 
         if(participants.length === 0) {
-            IRIs.push(this.props.user["@id"]);
+            IRIs.push(props.user["@id"]);
         } else {
 
             for(let i=0; i < participants.length; i++) {
                 IRIs.push(participants[i]["@id"]);
             }
-            IRIs.push(this.props.user["@id"]);
+            IRIs.push(props.user["@id"]);
         }
 
-        let state = (this.props.activity.registrationsMax === IRIs.length) ? "/api/states/3" : "/api/states/2";
+        let state = (props.activity.registrationsMax === IRIs.length) ? "/api/states/3" : "/api/states/2";
 
-        const activityIRI = this.props.activity["@id"];
+        const activityIRI = props.activity["@id"];
 
 
         axios.put(`https://127.0.0.1:8000${activityIRI}`, {
             "participants": IRIs,
             "state": state,
         }).catch(() => {
-            this.setState({error : true})
-            this.setState({message : "Une erreur s'est produite lors de l'inscription"})
+            setError(true);
+            setMessage("Une erreur s'est produite lors de l'inscription");
         }).then()
 
-        if(this.state.error) {
-            document.getElementById("error-message-activities").innerText = this.state.message;
+        if(error) {
+            document.getElementById("error-message-activities").innerText = message;
         }
 
-        this.props.register();
+        props.register();
 
 }
-
-    render() {
         return (
-            <a onClick={this.register}>S'inscrire</a>
+            <a onClick={register}>S'inscrire</a>
         );
-    }
 }
 
 export default Registered;

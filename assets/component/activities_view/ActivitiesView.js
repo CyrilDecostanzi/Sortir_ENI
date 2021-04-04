@@ -16,13 +16,21 @@ class ActivitiesView extends Component {
     }
 
     componentDidMount() {
-
         axios.get(`https://127.0.0.1:8000/getuser` )
             .then(res => {
                 const user = res.data;
                 this.setState({
                     user : user
-                });
+                })
+            })
+            .then(() => {
+                axios.get(`https://127.0.0.1:8000/api/participants/${this.state.user.id}`)
+                    .then(res => {
+                        const user = res.data;
+                        this.setState({
+                            user : user
+                        })
+                    })
             })
     }
 

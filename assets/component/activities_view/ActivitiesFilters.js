@@ -294,7 +294,7 @@ class ActivitiesFilters extends Component {
             if(activity.state.id === 2 || activity.state.id === 3) {
                 return <span><Link to={{ pathname: this.state.detailLink, state: {activity: activity}}}>Afficher</Link> - <Link to={{ pathname: this.state.cancelLink, state: {activity: activity} }}>Annuler</Link></span>;
             } else if (activity.state.id === 1) {
-                return <span><Link to={{ pathname: this.state.updateLink, state: {activity: activity} }}>Modifier</Link> - <Publish activity={activity} user={this.props.user} publish={this.handlePublish}/></span>;
+                return <span><Link to={{ pathname: this.state.updateLink, state: {activity: activity} }}>Modifier</Link> - <Publish activity={activity} publish={this.handlePublish}/></span>;
             } else {
                 return <span><Link to={{ pathname: this.state.detailLink, state: {activity: activity}}}>Afficher</Link></span>;
             }

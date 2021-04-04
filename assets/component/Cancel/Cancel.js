@@ -25,10 +25,6 @@ export default class Cancel extends Component {
         this.props.history.push('/app/accueil');
     }
 
-    componentDidMount() {
-
-
-    }
 
     handleSubmit(e) {
         e.preventDefault();
