@@ -1,32 +1,12 @@
-import React, {Component} from "react";
+import React, {useState} from "react";
 import './activity_detail.css';
 import {Link} from "react-router-dom";
 import 'animate.css';
 
 
-export default class ActivityDetail extends Component {
+const ActivityDetail = (props) => {
 
-    state = {
-        activity: this.props.location.state.activity
-    }
-
-
-    constructor(props) {
-        super(props);
-        this.cancel = this.cancel.bind(this);
-    }
-
-    cancel() {
-        this.props.history.push('/app/accueil');
-    }
-
-    componentDidMount() {
-
-
-    }
-
-    render() {
-        const activity = this.state.activity;
+    const [activity] = useState(props.location.state.activity);
 
         return (
             <div className="detail_container">
@@ -115,15 +95,10 @@ export default class ActivityDetail extends Component {
                         </table>
                     </div>
                     <div className="button_box_detail">
-                        <button type="button" onClick={this.cancel}>Retour</button>
+                        <button type="button" onClick={() => props.history.push('/app/accueil')}>Retour</button>
                     </div>
                 </div>
             </div>
-
-
         )
-
-    }
-
-
 }
+export default ActivityDetail

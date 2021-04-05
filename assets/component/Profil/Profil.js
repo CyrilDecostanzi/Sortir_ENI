@@ -1,64 +1,49 @@
-import React, {Component} from "react";
+import React, {useState, useEffect} from "react";
 import './profil.css';
 import photo from '../../images/licorne.png'
 import axios from 'axios';
 
 
+const Profil = (props) => {
 
+    const [person, setPerson] = useState('');
+    const [campusList, setCampusList] = useState([]);
+    const [message, setMessage] = useState('');
+    const [error, setError] = useState(false);
 
-export default class Profil extends Component {
-
-    state = {
-        connectedUser: '',
-        idUserConnected: localStorage.getItem('id'),
-        person: '',
-        campusList: [],
-        message: '',
-        error: false
-    }
-
-    constructor(props) {
-        super(props);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.cancel = this.cancel.bind(this);
-    }
-    cancel(e) {
-        e.preventDefault();
-        this.props.history.push('/app/accueil');
-    }
-
-    componentDidMount() {
+    useEffect( () => {
 
         axios.get(`https://127.0.0.1:8000/getuser` )
             .catch(() => {
-                this.setState({error : true})
-                this.setState({message : "Impossible de récuperer l'utilisateur"})
+                setError(true);
+                setMessage("Impossible de récuperer l'utilisateur");
             })
             .then(res => {
-                const person = res.data
-                this.setState({ person : person })
+                const result = res.data
+                setPerson(result);
             })
         axios.get(`https://127.0.0.1:8000/api/campuses`)
             .catch(() => {
-                this.setState({error : true})
-                this.setState({message : 'Un problème est survenue, veuillez reesayer plus tard'})
+                setError(true);
+                setMessage('Un problème est survenue, veuillez reesayer plus tard');
             })
             .then(res => {
             const campuses = res.data['hydra:member'];
-            this.setState({ campusList : campuses });
+            setCampusList(campuses);
         });
-    }
 
-    handleSubmit(e) {
+    }, [])
+
+    const handleSubmit = (e) => {
         e.preventDefault();
         if(e.target.elements.namedItem('password').value !== e.target.elements.namedItem('confirmation_pass').value) {
-            this.setState({error : true});
-            this.setState({message : 'Les mots de passe ne correspondent pas...'});
+            setError(true);
+            setMessage('Les mots de passe ne correspondent pas...');
         } else if (e.target.elements.namedItem('campus').value === "") {
-            this.setState({error : true});
-            this.setState({message : 'Choisissez un campus'});
+            setError(true);
+            setMessage('Choisissez un campus');
         } else {
-            axios.put(`https://127.0.0.1:8000/api/participants/`+this.state.idUserConnected, {
+            axios.put(`https://127.0.0.1:8000/api/participants/${person.id}`, {
                 "pseudo" : e.target.elements.namedItem('pseudo').value,
                 "firstName" : e.target.elements.namedItem('prenom').value,
                 "lastName" : e.target.elements.namedItem('nom').value,
@@ -68,23 +53,20 @@ export default class Profil extends Component {
                 "campus" : e.target.elements.namedItem('campus').value
             })
                 .catch(error => {
-                    this.setState({error : true})
-                    this.setState({message : error.response.data.violations[0].message})
+                    setError(true);
+                    setMessage(error.response.data.violations[0].message);
                 })
                 .then(response => {
                     if(response) {
-                        this.setState({error : false});
-                        this.setState({message : 'Votre profil a bien été modifié'});
+                        setError(false);
+                        setMessage('Votre profil a bien été modifié');
                     }
                 })
 
         }
     }
 
-
-    render() {
-
-        const user = this.state.person;
+        const user = person;
         return (
             <div className="container_p">
                 <div className="profile_picture animate__animated animate__bounceInUp">
@@ -92,9 +74,9 @@ export default class Profil extends Component {
                 </div>
                 <div className="profile_container">
                     <h2 className="animate__animated animate__backInDown">Mon profil</h2>
-                    <p className={ this.state.error ? 'profile_message_error' : 'profile_message_success' }>{this.state.message}</p>
+                    <p className={ error ? 'profile_message_error' : 'profile_message_success' }>{message}</p>
                     <div className="profile_form">
-                        <form onSubmit={this.handleSubmit}>
+                        <form onSubmit={handleSubmit}>
                             <div className="input_box">
                                 <label htmlFor="pseudo">Pseudo :</label>
                                 <input type="text" id="pseudo" name="pseudo" required="required" defaultValue={user.pseudo}/>
@@ -127,7 +109,7 @@ export default class Profil extends Component {
                                 <label htmlFor="campus">Campus :</label>
                                 <select name="campus" id="campus" defaultValue="" >
                                     <option disabled >Votre campus</option>
-                                    {this.state.campusList.map(campus =>
+                                    {campusList.map(campus =>
                                         <option key={campus.name} value={campus["@id"]}>{ campus.name }</option>
                                     )}
                                 </select>
@@ -139,15 +121,12 @@ export default class Profil extends Component {
                             </div>
                             <div className="button_box">
                                 <button type="submit">Enregistrer</button>
-                                <button onClick={this.cancel}>Annuler</button>
+                                <button onClick={() => props.history.push('/app/accueil')}>Annuler</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
         )
-
-    }
-
-
 }
+export default Profil

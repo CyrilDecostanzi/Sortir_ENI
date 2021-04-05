@@ -1,96 +1,70 @@
-import React, {Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import './connexion.css';
 import axios from 'axios';
 import LoginForm from './LoginForm';
 
 
-class LoginApp extends Component {
+const LoginApp = () => {
 
-    constructor(props) {
-        super(props);
+    const [pseudo, setPseudo] = useState('');
+    const [password, setPassword] = useState('');
+    const [message, setMessage] = useState('');
+    const [redirect, setRedirect] = useState(false);
+    const [getUser, setGetUser] = useState(false);
 
-        this.state = {
-            id: '',
-            pseudo: '',
-            password: '',
-            isAdmin: '',
-            message: '',
-            connexion: '',
-            redirect: false,
-            getUser: false,
-            push: ''
-        };
-        this.handleFormSubmit = this.handleFormSubmit.bind(this);
-        this.handleChangePseudo = this.handleChangePseudo.bind(this);
-        this.handleChangePassword = this.handleChangePassword.bind(this);
-    }
+    useEffect(
+        () => {
+            if (redirect && getUser) {
+                window.location.href = '/app/accueil';
+            }
+        }
+    )
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-
-    }
-
-    handleFormSubmit(event) {
+    const handleFormSubmit = (event) => {
         event.preventDefault();
         axios.post('/login', {
-            pseudo: this.state.pseudo,
-            password: this.state.password,
+            pseudo: pseudo,
+            password: password,
             withCredentials: true
         }).catch(() => {
-                const message = 'mot de passe ou login invalide';
-                this.setState({message: message});
-            }).then(response => {
-                const connexion = response.data;
-                this.setState({connexion: connexion});
-                this.setState({
-                    redirect: true
-                })
+                setMessage('mot de passe ou login invalide');
+            }).then(() => {
+                setRedirect(true);
             }).then(() => {
                 axios.get(`/getuser`, {
                     withCredentials: true
                 }).catch(() => {
-                    const message = 'mot de passe ou login invalide';
-                    this.setState({message: message});
+                    setMessage('mot de passe ou login invalide');
                 }).then(res => {
                     const loggedUser = res.data;
                     localStorage.setItem('id', loggedUser.id);
                     localStorage.setItem('pseudo', loggedUser.pseudo);
-                    localStorage.setItem('isAdmin', loggedUser.isAdmin);
-                    this.setState({
-                        getUser: true
-                    })
-
-                    if (this.state.redirect && this.state.getUser) {
-                        window.location.href = '/app/accueil';
-                    }
+                    setGetUser(true);
                 })
             });
     }
 
-    handleChangePassword(password) {
-        this.setState({password: password});
+    const handleChangePassword = (pass) => {
+        setPassword(pass);
     }
 
-    handleChangePseudo(pseudo) {
-        this.setState({pseudo: pseudo});
+    const handleChangePseudo = (pse) => {
+        setPseudo(pse);
     }
 
-    render() {
-        const pseudo = this.state.pseudo;
-        const password = this.state.password;
 
         return (
             <div className="container">
-                <p className="error_message">{this.state.message}</p>
+                <p className="error_message">{message}</p>
                 <LoginForm
-                    loginListener={this.handleFormSubmit}
-                    pseudoChange={this.handleChangePseudo}
+                    loginListener={handleFormSubmit}
+                    pseudoChange={handleChangePseudo}
                     pseudo={pseudo}
-                    passwordChange={this.handleChangePassword}
+                    passwordChange={handleChangePassword}
                     password={password}
                 />
             </div>
         );
-    }
 }
 
 export default LoginApp;

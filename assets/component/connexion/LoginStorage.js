@@ -1,7 +1,7 @@
 import axios from "axios";
 import React from "react";
 
-const addLocalStorage = function () {
+const addLocalStorage = () => {
     axios.get(`/getuser`, {
         withCredentials: true
     }).then(res => {

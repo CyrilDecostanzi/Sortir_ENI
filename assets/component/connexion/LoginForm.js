@@ -1,28 +1,18 @@
-import React, {Component} from "react";
+import React from "react";
 import './connexion.css';
 
-export default class LoginForm extends Component {
+const LoginForm = (props) => {
 
-    constructor(props) {
-        super(props);
-
-        this.state = {button: 'connexion'}
-
-        this.handlePseudoChange = this.handlePseudoChange.bind(this);
-        this.handlePasswordChange = this.handlePasswordChange.bind(this);
+    const handlePseudoChange = (event) => {
+        props.pseudoChange(event.target.value);
     }
 
-    handlePseudoChange(event) {
-        this.props.pseudoChange(event.target.value);
+    const handlePasswordChange = (event) => {
+        props.passwordChange(event.target.value);
     }
 
-    handlePasswordChange(event) {
-        this.props.passwordChange(event.target.value);
-    }
-
-    render() {
-        const pseudo = this.props.pseudo;
-        const password = this.props.password;
+        const pseudo = props.pseudo;
+        const password = props.password;
 
         return (
             <div className="login animate__animated animate__backInDown">
@@ -30,18 +20,18 @@ export default class LoginForm extends Component {
                     <legend>Identifiant :</legend>
                     <input type="text"
                            value={pseudo}
-                           onChange={this.handlePseudoChange}
+                           onChange={handlePseudoChange}
                            required="required"/>
                 </div>
                 <div className="inline-form">
                     <legend>Mot de passe :</legend>
                     <input type="password"
                            value={password}
-                           onChange={this.handlePasswordChange}
+                           onChange={handlePasswordChange}
                            required="required"/>
                 </div>
                 <div className="btn-container">
-                    <button type="submit" className="submit-button" onClick={this.props.loginListener}>Connexion</button>
+                    <button type="submit" className="submit-button" onClick={props.loginListener}>Connexion</button>
                     <div className="remember-me">
                         <input type="checkbox" id="remember_me" name="_remember_me"/>
                         <label htmlFor="remember_me">Se souvenir de moi</label>
@@ -49,5 +39,6 @@ export default class LoginForm extends Component {
                 </div>
                </div>
         );
-    }
 }
+
+export default LoginForm

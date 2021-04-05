@@ -1,63 +1,64 @@
-import React, {Component} from "react";
+import React, {useState, useEffect} from "react";
 import './create_activity.css';
 import axios from "axios";
 
 
-export default class CreateActivity extends Component {
+const CreateActivity = (props) => {
 
+    const [cities, setCities] = useState([]);
+    const [message, setMessage] = useState('');
+    const [error, setError] = useState(false);
+    const [selectedCity, setSelectedCity] = useState('');
+    const [selectedPlace, setSelectedPlace] = useState('');
+    const [places, setPlaces] = useState([]);
+    const [actState, setActState] = useState('');
+    const [createdState] = useState('/api/states/1');
+    const [publishedState] = useState('/api/states/2');
+    const [connectedUserCampus, setConnectedUserCampus] = useState('');
+    const [isSaved, setIsSaved] = useState(false);
+    const [isPublished, setIsPublished] = useState(false);
+    const [dateNow, setDateNow] = useState('');
+    const [timeNow, setTimeNow] = useState('');
+    const [maxDateRegistration, setMaxDateRegistration] = useState('');
 
-    state = {
-        cities: [],
-        message: '',
-        error: false,
-        selectedCity: '',
-        selectedPlace: '',
-        places:[],
-        actState: '',
-        createdState: '/api/states/1',
-        publishedState : '/api/states/2',
-        connectedUser: '',
-        campusName : '',
-        isSaved : false,
-        isPublished :false,
-        dateNow : "",
-        timeNow : "",
-        maxDateRegistration : "",
-        idUserConnected : localStorage.getItem('id')
-    }
+    useEffect( () => {
 
-    constructor(props) {
-        super(props);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.cancel = this.cancel.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-        this.handlePlaceChange = this.handlePlaceChange.bind(this);
-        this.handlePublish = this.handlePublish.bind(this);
-        this.handleSave = this.handleSave.bind(this);
-        this.handleTimeChange = this.handleTimeChange.bind(this);
-        this.handleChangeForm = this.handleChangeForm.bind(this);
+        axios.get(`https://127.0.0.1:8000/api/cities`)
+            .catch(() => {
+                setError(true);
+                setMessage('Un problème est survenue, veuillez reesayer plus tard')
+            })
+            .then(res => {
+                const city = res.data['hydra:member'];
+                setCities(city);
+            })
+            .then(() => {
+                axios.get(`https://127.0.0.1:8000/getuser`)
+                    .catch(()=> {
+                        setError(true);
+                        setMessage('Impossible de récuperer l\'utilisateur')
+                    })
+                    .then(res => {
+                        const connectUser = res.data
+                        setConnectedUserCampus(connectUser.campus.name);
+                        setDateNow(new Date().toISOString().substr(0, 10));
+                        setTimeNow(new Date().toLocaleTimeString().substr(0, 5));
+                    })
+            })
+    }, [])
+
+    const handleChangeForm = () => {
+        setIsSaved(false);
+        setIsPublished(false);
     }
-    cancel() {
-        this.props.history.push('/app/accueil');
+    const handleTimeChange = (e) => {
+      setMaxDateRegistration(e.target.value);
     }
-    handleChangeForm() {
-        this.setState({isSaved : false});
-        this.setState({isPublished: false});
-    }
-    handleSave() {
-        this.setState({actState : this.state.createdState});
-    }
-    handlePublish() {
-        this.setState({actState : this.state.publishedState});
-    }
-    handleTimeChange(e) {
-      this.setState({maxDateRegistration : e.target.value})
-    }
-    handleSubmit(e) {
+    const handleSubmit = (e) => {
         e.preventDefault();
         if (e.target.elements.namedItem('act_city').value === "" || e.target.elements.namedItem('act_place').value === "") {
-            this.setState({error : true});
-            this.setState({message : 'Selectionnez une ville'});
+            setError(true);
+            setMessage('Selectionnez une ville');
         } else {
         const dateStart =e.target.elements.namedItem('act_startdate').value + ' ' + e.target.elements.namedItem('act_start_time').value;
         axios.post(`https://127.0.0.1:8000/api/activities`, {
@@ -67,102 +68,70 @@ export default class CreateActivity extends Component {
             "registrationDeadline" : e.target.elements.namedItem('act_maxdate').value,
             "registrationsMax" : parseInt(e.target.elements.namedItem('act_maxplaces').value),
             "description" : e.target.elements.namedItem('act_infos').value,
-            "promoter" : '/api/participants/'+this.state.connectedUser.id,
-            "campus" : '/api/campuses/'+this.state.connectedUser.campus.id,
-            "state" :  this.state.actState,
+            "promoter" : '/api/participants/'+connectedUser.id,
+            "campus" : '/api/campuses/'+connectedUser.campus.id,
+            "state" :  actState,
             "place" : e.target.elements.namedItem('act_place').value,
         })
             .catch(error => {
-                this.setState({error : true})
-                this.setState({message : error.response.data.violations[0].message})
+                setError(true);
+                setMessage(error.response.data.violations[0].message)
             })
             .then(response => {
                 if(response) {
-                    this.setState({isSaved : true});
-                    this.setState({isPublished: true});
-                    this.setState({error : false});
-                    this.setState({message : 'La sortie a bien été créée ! Vous allez être redirigé vers l\'accueil...'});
-                    setTimeout(this.cancel, 2000)
+                    setIsSaved(true);
+                    setIsPublished(true);
+                    setError(false);
+                    setMessage('La sortie a bien été créée ! Vous allez être redirigé vers l\'accueil...');
+                    setTimeout(() => props.history.push('/app/accueil'), 2000)
                 }
             })
 
         }
     }
-    handleChange(e) {
+    const handleChange = (e) => {
         axios.get(`https://127.0.0.1:8000`+e.target.value)
             .catch(() => {
-                this.setState({error : true})
-                this.setState({message : 'Un problème est survenue, veuillez reesayer plus tard'})
-            })
-            .then((res) => {
-                const selectedCity = res.data;
-                this.setState({ selectedCity : selectedCity });
-            })
-            .then(() =>
-                axios.get(`https://127.0.0.1:8000/api/places?city.id=`+this.state.selectedCity.id)
-                    .catch(() => {
-                        this.setState({error : true})
-                        this.setState({message : 'Un problème est survenue, veuillez reesayer plus tard'})
-                    })
-                    .then(res => {
-                        const places = res.data['hydra:member'];
-                        this.setState({ places : places });
-                        this.setState({selectedPlace : ""})
-                    }
-            ))
-
-    }
-    handlePlaceChange(e) {
-        axios.get(`https://127.0.0.1:8000`+e.target.value)
-            .catch(() => {
-                this.setState({error : true})
-                this.setState({message : 'Veuillez choisir un lieu valide'})
+                setError(true);
+                setMessage('Un problème est survenue, veuillez reesayer plus tard')
             })
             .then(res => {
-                    const selectedPlace = res.data;
-                    this.setState({ selectedPlace : selectedPlace });
-                    this.setState({message : ''})
+                    const selectCity = res.data;
+                    setSelectedCity(selectCity);
+                    axios.get(`https://127.0.0.1:8000/api/places?city.id=`+selectCity.id)
+                        .catch(() => {
+                            setError(true);
+                            setMessage('Un problème est survenue, veuillez reesayer plus tard');
+                        })
+                        .then(res => {
+                            const place = res.data['hydra:member'];
+                            setPlaces(place)
+                            setSelectedPlace('');
+                        })
+            }
+            )
+
+    }
+    const handlePlaceChange = (e) => {
+        axios.get(`https://127.0.0.1:8000`+e.target.value)
+            .catch(() => {
+                setError(true);
+                setMessage('Veuillez choisir un lieu valide')
+            })
+            .then(res => {
+                    const selectPlace = res.data;
+                    setSelectedPlace(selectPlace);
+                    setMessage('');
                 }
             )
     }
 
-    componentDidMount() {
-
-        axios.get(`https://127.0.0.1:8000/api/cities`)
-            .catch(() => {
-                this.setState({error : true})
-                this.setState({message : 'Un problème est survenue, veuillez reesayer plus tard'})
-            })
-            .then(res => {
-                const cities = res.data['hydra:member'];
-                this.setState({ cities : cities });
-            })
-            .then(() => {
-                axios.get(`https://127.0.0.1:8000/getuser`)
-                    .catch(()=> {
-                        this.setState({error : true})
-                        this.setState({message : 'Impossible de récuperer l\'utilisateur'})
-                    })
-                    .then(res => {
-                        const connectedUser = res.data
-                        this.setState({ connectedUser : connectedUser })
-                        this.setState({campusName: this.state.connectedUser.campus.name })
-                        this.setState({dateNow : new Date().toISOString().substr(0, 10)});
-                        this.setState({timeNow : new Date().toLocaleTimeString().substr(0, 5)})
-                    })
-            })
-
-
-    }
-
-
-    render() {
     return(
         <div className="create_act_container">
             <h2 className="create_act_title animate__animated animate__backInDown">Créer une sortie</h2>
-            <p className={ this.state.error ? 'profile_message_error' : 'profile_message_success' }>{this.state.message}</p>
+            <p className={ error ? 'profile_message_error' : 'profile_message_success' }>{message}</p>
             <div className="create_act_form_container animate__animated animate__fadeIn">
-                <form onSubmit={this.handleSubmit} onChange={this.handleChangeForm} >
+                <form onSubmit={handleSubmit} onChange={handleChangeForm} >
                     <div className="create_act_form">
                         <div className="form_left_col form_act_box">
                             <div className="create_act_box">
@@ -171,12 +140,12 @@ export default class CreateActivity extends Component {
                             </div>
                             <div className="create_act_box">
                                 <label htmlFor="act_startdate">Date et heure du début de la sortie :</label>
-                                <input defaultValue={this.state.dateNow} min={this.state.dateNow}  type="date" id="act_startdate" name="act_startdate" required="required" onChange={this.handleTimeChange}/>
-                                <input defaultValue={this.state.timeNow} type="time" id="act_start_time" name="act_start_time" required="required"/>
+                                <input defaultValue={dateNow} min={dateNow}  type="date" id="act_startdate" name="act_startdate" required="required" onChange={handleTimeChange}/>
+                                <input defaultValue={timeNow} type="time" id="act_start_time" name="act_start_time" required="required"/>
                             </div>
                             <div className="create_act_box">
                                 <label htmlFor="act_maxdate">Date limite d'inscription :</label>
-                                <input defaultValue={this.state.maxDateRegistration ? this.state.maxDateRegistration : this.state.dateNow} max={this.state.maxDateRegistration ? this.state.maxDateRegistration : this.state.dateNow} min={this.state.dateNow} type="date" id="act_maxdate" name="act_maxdate" required="required"/>
+                                <input defaultValue={maxDateRegistration ? maxDateRegistration : dateNow} max={maxDateRegistration ? maxDateRegistration : dateNow} min={dateNow} type="date" id="act_maxdate" name="act_maxdate" required="required"/>
                             </div>
                             <div className="create_act_box">
                                 <label htmlFor="act_maxplaces">Nombres de places (<em>hors organisateur</em>):</label>
@@ -194,48 +163,48 @@ export default class CreateActivity extends Component {
                         <div className="form_right_col form_act_box">
                             <div className="create_act_box">
                                 <label>Campus :</label>
-                                <em>{this.state.campusName}</em>
+                                <em>{connectedUserCampus}</em>
                             </div>
                             <div className="create_act_box">
                                 <label htmlFor="act_city">Ville :</label>
-                                <select name="act_city" id="act_city" onChange={this.handleChange} required="required" defaultValue="">
+                                <select name="act_city" id="act_city" onChange={handleChange} required="required" defaultValue="">
                                     <option disabled={true} value="">Selectionnez une ville</option>
-                                    {this.state.cities.map(city =>
+                                    {cities.map(city =>
                                         <option key={city.name} value={city["@id"]}>{ city.name }</option>
                                     )}
                                 </select>
                             </div>
                             <div className="create_act_box">
                                 <label htmlFor="act_place">Lieu :</label>
-                                <select name="act_place" id="act_place" onChange={this.handlePlaceChange} required="required" defaultValue="">
+                                <select name="act_place" id="act_place" onChange={handlePlaceChange} required="required" defaultValue="">
                                     <option value="">Selectionnez un lieu</option>
-                                    {this.state.places.map(place =>
+                                    {places.map(place =>
                                         <option key={place.name} value={place["@id"]}>{ place.name }</option>
                                     )}
                                 </select>
                             </div>
                             <div className="create_act_box">
                                 <label>Rue :</label>
-                                <em>{this.state.selectedPlace.street }</em>
+                                <em>{selectedPlace.street }</em>
                             </div>
                             <div className="create_act_box">
                                 <label>Code postal :</label>
-                                <em>{this.state.selectedCity.postalCode}</em>
+                                <em>{selectedCity.postalCode}</em>
                             </div>
                             <div className="create_act_box">
                                 <label htmlFor="act_latitude">Latitude :</label>
-                                <input value={this.state.selectedPlace.latitude} name="act_latitude" id="act_latitude" type="text" disabled="disabled"/>
+                                <input value={selectedPlace.latitude} name="act_latitude" id="act_latitude" type="text" disabled="disabled"/>
                             </div>
                             <div className="create_act_box">
                                 <label htmlFor="act_longitude">Longitude :</label>
-                                <input value={this.state.selectedPlace.longitude} type="text" name="act_longitude" id="act_longitude" disabled="disabled"/>
+                                <input value={selectedPlace.longitude} type="text" name="act_longitude" id="act_longitude" disabled="disabled"/>
                             </div>
                         </div>
                     </div>
                     <div className="create_act_box_button">
-                        <button disabled={this.state.isSaved} onClick={this.handleSave} type="submit">Enregistrer</button>
-                        <button disabled={this.state.isPublished} type='submit' name="publishButton" className="publishButton" onClick={this.handlePublish}>Publier la sortie</button>
-                        <button onClick={this.cancel} type="button">Annuler</button>
+                        <button disabled={isSaved} onClick={() => setActState(createdState)} type="submit">Enregistrer</button>
+                        <button disabled={isPublished} type='submit' name="publishButton" className="publishButton" onClick={() => setActState(publishedState)}>Publier la sortie</button>
+                        <button onClick={() => props.history.push('/app/accueil')} type="button">Annuler</button>
                     </div>
                 </form>
             </div>
@@ -244,5 +213,4 @@ export default class CreateActivity extends Component {
         </div>
     )
 }
-
-}
+export default CreateActivity
