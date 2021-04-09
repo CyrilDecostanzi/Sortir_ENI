@@ -21,7 +21,7 @@ export default class ViewParticipantProfil extends Component {
 
         axios.get(url, {
             withCredentials: true
-        }).catch(error => {
+        }).catch(() => {
             this.setState({error: true})
             this.setState({message: 'Un problème est survenue, veuillez reesayer plus tard'})
         }).then(res => {
