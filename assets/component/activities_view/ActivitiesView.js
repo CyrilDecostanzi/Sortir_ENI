@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Link} from "react-router-dom";
 import ActivitiesFilters from "./ActivitiesFilters";
 import '/assets/styles/activities_view.css'
@@ -6,39 +6,26 @@ import axios from "axios";
 
 
 
-class ActivitiesView extends Component {
+const ActivitiesView = () => {
 
-    state = {
-        user : '',
-        name:'',
+    const [user, setUser] = useState('');
 
 
-    }
 
-    componentDidMount() {
+    useEffect(() => {
         axios.get(`https://127.0.0.1:8000/getuser` )
             .then(res => {
-                const user = res.data;
-                this.setState({
-                    user : user
-                })
-            })
-            .then(() => {
-                axios.get(`https://127.0.0.1:8000/api/participants/${this.state.user.id}`)
+                const resultGet = res.data;
+                axios.get(`https://127.0.0.1:8000/api/participants/${resultGet.id}`)
                     .then(res => {
-                        const user = res.data;
-                        this.setState({
-                            user : user
-                        })
+                        const result = res.data;
+                        setUser(result);
                     })
             })
-    }
+    }, [])
 
-
-    render() {
 
         let date = new Date().toLocaleDateString();
-        const user = this.state.user;
 
         return (
             <div id="trip-view">
@@ -52,7 +39,6 @@ class ActivitiesView extends Component {
                 <Link to="/app/ajouter-une-sortie"><button>Créer une sortie</button></Link>
             </div>
         );
-    }
 }
 
 

@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import LoginApp from "./connexion/LoginApp";
 import LoginForm from "./connexion/LoginForm";
 import Profil from "./Profil/Profil";
-import ViewParticpantProfil from "./Profil/ViewParticpantProfil";
+import ViewParticipantProfil from "./Profil/ViewParticipantProfil";
 import Logout from "./logout/Logout";
 import ActivitiesView from "./activities_view/ActivitiesView";
 import CreateActivity from "./Create_activity/CreateActivity";
@@ -14,13 +14,8 @@ import Menu from "./Menu/Menu";
 import UpdateActivity from "./Update_activity/UpdateActivity";
 import ActivityDetail from "./Activity_detail/ActivityDetail";
 
-class Container extends Component {
+const Container = () => {
 
-    state = {
-        menu : ''
-    }
-
-    render() {
         return (
             <BrowserRouter>
                 {(localStorage.length === 0) ? <Logo/> : ""}
@@ -43,11 +38,10 @@ class Container extends Component {
                     <Route path="/app/profil" component={Profil}/>
                     <Route path="/app/logout" component={Logout}/>
                     <Route exact path="/app/login" component={LoginApp}/>
-                    <Route path="/app/participants/:id" component={ViewParticpantProfil}/>
+                    <Route path="/app/participants/:id" component={ViewParticipantProfil}/>
                 </Switch>
             </BrowserRouter>
         )
-    }
 }
 
 export default Container;

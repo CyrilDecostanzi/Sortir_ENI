@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 
-const Logout = function (props) {
+const Logout = function () {
     localStorage.clear();
     axios.get('/logout').then(() => {
         window.location.href = '/app';
